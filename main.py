@@ -6,9 +6,14 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-messages = []
+messages = [
+    {
+        "role": "system",
+        "content": "คุณเป็น AI assistant ชื่อ บี ช่วยสอน Python และ AI development ตอบภาษาไทย กระชับและตรงประเด็น"
+    }
+]
 
-print("คุยกับ AI ได้เลย! พิมพ์ 'exit' เพื่อออก")
+print("คุยกับ บี ได้เลย! พิมพ์ 'exit' เพื่อออก")
 
 while True:
     user_input = input("คุณ: ")
@@ -25,7 +30,6 @@ while True:
     )
     
     ai_reply = response.choices[0].message.content
-    
     messages.append({"role": "assistant", "content": ai_reply})
     
-    print(f"AI: {ai_reply}")
+    print(f"บี: {ai_reply}\n")
