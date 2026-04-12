@@ -1,19 +1,18 @@
 import os
 from dotenv import load_dotenv
-from groq import Groq
+from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, AIMessage
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="llama-3.3-70b-versatile"
+)
 
-messages = [
-    {
-        "role": "system",
-        "content": "คุณเป็น AI assistant ชื่อ บี ช่วยสอน Python และ AI development ตอบภาษาไทย กระชับและตรงประเด็น"
-    }
-]
+messages = []
 
-print("คุยกับ บี ได้เลย! พิมพ์ 'exit' เพื่อออก")
+print("คุยกับ AI ได้เลย! พิมพ์ 'exit' เพื่อออก")
 
 while True:
     user_input = input("คุณ: ")
@@ -22,14 +21,10 @@ while True:
         print("ลาก่อนครับ!")
         break
     
-    messages.append({"role": "user", "content": user_input})
+    messages.append(HumanMessage(content=user_input))
     
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=messages
-    )
+    response = llm.invoke(messages)
     
-    ai_reply = response.choices[0].message.content
-    messages.append({"role": "assistant", "content": ai_reply})
+    messages.append(AIMessage(content=response.content))
     
-    print(f"บี: {ai_reply}\n")
+    print(f"AI: {response.content}\n")
